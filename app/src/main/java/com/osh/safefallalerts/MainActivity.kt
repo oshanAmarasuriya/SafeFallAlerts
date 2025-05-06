@@ -24,6 +24,14 @@ class MainActivity : ComponentActivity() {
         val startButton: Button = findViewById(R.id.btn_start)
         val stopButton: Button = findViewById(R.id.btn_stop)
 
+        startButton.setOnClickListener {
+            val intent = Intent(this, SensorService::class.java)
+            ContextCompat.startForegroundService(this, intent)
+        }
 
+        stopButton.setOnClickListener {
+            val intent = Intent(this, SensorService::class.java)
+            stopService(intent)
+        }
     }
 }
