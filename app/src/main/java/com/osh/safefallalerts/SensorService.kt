@@ -1,5 +1,6 @@
 package com.osh.safefallalerts
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,8 +12,15 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import kotlin.math.sqrt
 
 class SensorService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -32,13 +40,32 @@ class SensorService : Service(), SensorEventListener {
         startForeground(1, createNotification())
     }
 
-    override fun onSensorChanged(p0: SensorEvent?) {
-        TODO("Not yet implemented")
+    override fun onSensorChanged(event: SensorEvent?) {
+        event?.let {
+            if (it.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                val x = it.values[0]
+                val y = it.values[1]
+                val z = it.values[2]
+
+                val magnitude = sqrt(x * x + y * y + z * z)
+
+                if (magnitude < 2.0f) { // possible free fall
+                    val now = System.currentTimeMillis()
+                    if (now - lastFallTimestamp > 1000) {
+                        lastFallTimestamp = now
+                        Log.d("FallDetection", "Possible fall detected! Acc mag: $magnitude")
+                        // Trigger alert, vibration, etc.
+                        Handler(Looper.getMainLooper()).post {
+                            showToastWithVibration("Fall detected!")
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) { }
 
     private fun createNotification(): Notification {
         val notificationChannelId = "sensor_service_channel"
@@ -56,4 +83,25 @@ class SensorService : Service(), SensorEventListener {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .build()
     }
+
+    @SuppressLint("ServiceCast")
+    fun Context.showToastWithVibration(message: String) {
+        // Show toast
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+        // Vibrate
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    500, // duration in ms
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(500)
+        }
+    }
+
 }
