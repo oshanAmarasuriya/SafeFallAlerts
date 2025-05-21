@@ -58,6 +58,12 @@ class SensorService : Service(), SensorEventListener {
                         Handler(Looper.getMainLooper()).post {
                             showToastWithVibration("Fall detected!")
                         }
+                        // Start new activity
+                        val intent = Intent(this, FallConfirmationActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        }
+                        startActivity(intent)
+
 
                     }
                 }
@@ -87,7 +93,7 @@ class SensorService : Service(), SensorEventListener {
     @SuppressLint("ServiceCast")
     fun Context.showToastWithVibration(message: String) {
         // Show toast
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
         // Vibrate
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
