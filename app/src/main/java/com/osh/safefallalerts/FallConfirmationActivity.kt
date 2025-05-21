@@ -32,8 +32,9 @@ class FallConfirmationActivity : ComponentActivity() {
             .setMessage("Did you fall?")
             .setPositiveButton("Yes") { _, _ ->
                 // TODO: Handle actual fall confirmed
-                Toast.makeText(this, "Emergency response activated", Toast.LENGTH_SHORT).show()
-                finish()
+                //Toast.makeText(this, "Emergency response activated", Toast.LENGTH_SHORT).show()
+                handleConfirmedFall()
+                //finish()
             }
             .setNegativeButton("No") { _, _ ->
                 // TODO: False alarm
@@ -86,7 +87,15 @@ class FallConfirmationActivity : ComponentActivity() {
     }
 
     private fun handleConfirmedFall() {
-        Toast.makeText(this, "Emergency response activated", Toast.LENGTH_LONG).show()
+        getLastKnownLocation(applicationContext) { lat, lon ->
+            if (lat != null && lon != null) {
+                Toast.makeText(this, "Emergency response activated. lat is $lat and lon is $lon", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Emergency response activated. BUT NO LOCATION DATA", Toast.LENGTH_LONG).show()
+            }
+        }
+
+//        Toast.makeText(this, "Emergency response activated", Toast.LENGTH_LONG).show()
         // TODO: Replace with emergency logic (e.g., send SMS, share location, etc.)
         finish()
     }
