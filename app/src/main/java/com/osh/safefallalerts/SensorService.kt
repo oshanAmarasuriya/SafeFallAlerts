@@ -104,4 +104,9 @@ class SensorService : Service(), SensorEventListener {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        sensorManager.unregisterListener(this)
+    }
+
 }
