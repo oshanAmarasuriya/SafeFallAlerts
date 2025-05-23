@@ -17,15 +17,34 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.osh.safefallalerts.ui.theme.SafeFallAlertsTheme
 import android.Manifest
+import android.widget.EditText
+import android.widget.Toast
+import com.osh.safefallalerts.db.Contact
+import com.osh.safefallalerts.db.ContactDao
+import com.osh.safefallalerts.db.ContactDatabase
+import kotlinx.coroutines.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var db: ContactDatabase
+    private lateinit var dao: ContactDao
+    private lateinit var adapter: ContactAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        db = ContactDatabase.getDatabase(this)
+        dao = db.contactDao()
+
         val startButton: Button = findViewById(R.id.btn_start)
         val stopButton: Button = findViewById(R.id.btn_stop)
+
+        val nameEditText: EditText = findViewById(R.id.edit_name)
+        val phoneEditText: EditText = findViewById(R.id.edit_phone)
+        val addButton: Button = findViewById(R.id.btn_add_contact)
 
         startButton.setOnClickListener {
             val intent = Intent(this, SensorService::class.java)
@@ -47,5 +66,40 @@ class MainActivity : ComponentActivity() {
             1001
         )
 
+        val recyclerView: RecyclerView = findViewById(R.id.recycler_contacts)
+        adapter = ContactAdapter(listOf())
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        fun loadContacts() {
+            CoroutineScope(Dispatchers.IO).launch {
+                val contacts = dao.getAll()
+                withContext(Dispatchers.Main) {
+                    adapter.updateData(contacts)
+                }
+            }
+        }
+
+        addButton.setOnClickListener {
+            val name = nameEditText.text.toString()
+            val phone = phoneEditText.text.toString()
+
+            if (name.isNotBlank() && phone.isNotBlank()) {
+                val contact = Contact(name = name, phoneNumber = phone)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    dao.insert(contact)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "Contact added!", Toast.LENGTH_SHORT).show()
+                        nameEditText.text.clear()
+                        phoneEditText.text.clear()
+                        loadContacts()
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            }
+        }
+        loadContacts()
     }
 }
