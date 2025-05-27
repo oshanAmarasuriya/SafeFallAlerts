@@ -7,23 +7,10 @@
     android:gravity="center"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/btn_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Monitoring"/>
-
-    <Button
-        android:id="@+id/btn_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Monitoring"
-        android:layout_marginTop="16dp"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sensitivity:"
+        android:text="Detection Sensitivity:"
         android:textStyle="bold"
         android:paddingTop="16dp" />
 
@@ -33,6 +20,30 @@
         android:layout_height="wrap_content"
         android:max="100"
         android:progress="20" />
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="160dp"
+        android:layout_height="55dp"
+        android:text="Start Monitoring"
+        />
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="160dp"
+        android:layout_height="55dp"
+        android:text="Stop Monitoring"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btn_inform"
+        android:layout_width="160dp"
+        android:layout_height="45dp"
+        android:text="Alert Fall !"
+        android:textColor="#FFFFFF"
+        android:background="#FF0000"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center" />
 
     <TextView
         android:layout_width="wrap_content"

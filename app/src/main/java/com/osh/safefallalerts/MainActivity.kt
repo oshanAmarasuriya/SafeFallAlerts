@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
         val startButton: Button = findViewById(R.id.btn_start)
         val stopButton: Button = findViewById(R.id.btn_stop)
         val sensitivitySeekBar = findViewById<SeekBar>(R.id.sensitivitySeekBar)
+        val informFallButton: Button = findViewById(R.id.btn_inform)
         val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
         val nameEditText: EditText = findViewById(R.id.edit_name)
@@ -69,6 +70,11 @@ class MainActivity : ComponentActivity() {
             sensitivitySeekBar.isEnabled = true
             Toast.makeText(this, "Tracking stopped", Toast.LENGTH_SHORT).show()
         }
+
+        informFallButton.setOnClickListener {
+            val intent = Intent(this, FallConfirmationActivity::class.java)
+            startActivity(intent)
+        }
 
         ActivityCompat.requestPermissions(
             this,
