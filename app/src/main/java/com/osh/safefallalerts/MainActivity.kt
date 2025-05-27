@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
         informFallButton.setOnClickListener {
             val intent = Intent(this, FallConfirmationActivity::class.java)
             startActivity(intent)
-        }
+        }
 
         ActivityCompat.requestPermissions(
             this,
