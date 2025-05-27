@@ -8,18 +8,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import android.telephony.SmsManager
 import kotlinx.coroutines.*
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.osh.safefallalerts.db.ContactDao
 import com.osh.safefallalerts.db.ContactDatabase
-import com.osh.safefallalerts.ui.theme.SafeFallAlertsTheme
+import com.osh.safefallalerts.utils.getLastKnownLocation
 
 private lateinit var alertDialog: AlertDialog
 private var countdown = 10
