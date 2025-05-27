@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
             //update service running status
             sharedPreferences.edit().putBoolean(SERVICE_RUNNING_KEY, true).apply()
             sensitivitySeekBar.isEnabled = false
+            Toast.makeText(this, "Tracking started", Toast.LENGTH_SHORT).show()
         }
 
         stopButton.setOnClickListener {
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
             stopService(intent)
             sharedPreferences.edit().putBoolean(SERVICE_RUNNING_KEY, false).apply()
             sensitivitySeekBar.isEnabled = true
+            Toast.makeText(this, "Tracking stopped", Toast.LENGTH_SHORT).show()
         }
 
         ActivityCompat.requestPermissions(
