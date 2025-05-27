@@ -20,6 +20,27 @@
         android:text="Stop Monitoring"
         android:layout_marginTop="16dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensitivity:"
+        android:textStyle="bold"
+        android:paddingTop="16dp" />
+
+    <SeekBar
+        android:id="@+id/sensitivitySeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="20" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Emergency Contact Manager:"
+        android:textStyle="bold"
+        android:paddingTop="16dp" />
+
     <EditText
         android:id="@+id/edit_name"
         android:layout_width="match_parent"

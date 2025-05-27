@@ -1,36 +1,34 @@
 package com.osh.safefallalerts
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.osh.safefallalerts.ui.theme.SafeFallAlertsTheme
-import android.Manifest
-import android.widget.EditText
-import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.osh.safefallalerts.db.Contact
 import com.osh.safefallalerts.db.ContactDao
 import com.osh.safefallalerts.db.ContactDatabase
-import kotlinx.coroutines.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.osh.safefallalerts.utils.ContactAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var db: ContactDatabase
     private lateinit var dao: ContactDao
     private lateinit var adapter: ContactAdapter
+    private val PREF_KEY = "sensitivity_value"
+    private val SERVICE_RUNNING_KEY = "service_running"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,19 +39,35 @@ class MainActivity : ComponentActivity() {
 
         val startButton: Button = findViewById(R.id.btn_start)
         val stopButton: Button = findViewById(R.id.btn_stop)
+        val sensitivitySeekBar = findViewById<SeekBar>(R.id.sensitivitySeekBar)
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
         val nameEditText: EditText = findViewById(R.id.edit_name)
         val phoneEditText: EditText = findViewById(R.id.edit_phone)
         val addButton: Button = findViewById(R.id.btn_add_contact)
 
+        // Load sensitivity and service state
+        val savedValue = sharedPreferences.getInt(PREF_KEY, 50)
+        sensitivitySeekBar.progress = savedValue
+
+        val serviceRunning = sharedPreferences.getBoolean(SERVICE_RUNNING_KEY, false)
+        sensitivitySeekBar.isEnabled = !serviceRunning
+
         startButton.setOnClickListener {
             val intent = Intent(this, SensorService::class.java)
             ContextCompat.startForegroundService(this, intent)
+            //update service running status
+            sharedPreferences.edit().putBoolean(SERVICE_RUNNING_KEY, true).apply()
+            sensitivitySeekBar.isEnabled = false
+            Toast.makeText(this, "Tracking started", Toast.LENGTH_SHORT).show()
         }
 
         stopButton.setOnClickListener {
             val intent = Intent(this, SensorService::class.java)
             stopService(intent)
+            sharedPreferences.edit().putBoolean(SERVICE_RUNNING_KEY, false).apply()
+            sensitivitySeekBar.isEnabled = true
+            Toast.makeText(this, "Tracking stopped", Toast.LENGTH_SHORT).show()
         }
 
         ActivityCompat.requestPermissions(
@@ -101,5 +115,21 @@ class MainActivity : ComponentActivity() {
             }
         }
         loadContacts()
+
+        sensitivitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Map 0–100 to a threshold range, e.g., 0.5 to 3.0
+                val sensitivityThreshold = 0.5f + (progress / 100f) * 2.5f
+                // Save the threshold to SharedPreferences
+                with(sharedPreferences.edit()) {
+                    putFloat("sensitivity_threshold", sensitivityThreshold)
+                    putInt(PREF_KEY, progress)
+                    apply()
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 }

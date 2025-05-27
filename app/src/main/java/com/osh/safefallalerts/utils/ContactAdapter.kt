@@ -1,10 +1,11 @@
-package com.osh.safefallalerts
+package com.osh.safefallalerts.utils
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.osh.safefallalerts.R
 import com.osh.safefallalerts.db.Contact
 
 class ContactAdapter(private var contacts: List<Contact>) :
