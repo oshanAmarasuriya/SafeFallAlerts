@@ -41,12 +41,14 @@ class SensorService : Service(), SensorEventListener {
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST)
         sensorManager.registerListener(this, gyro, SensorManager.SENSOR_DELAY_FASTEST)
 
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        sensitivityThreshold = sharedPreferences.getFloat("sensitivity_threshold", 2.0f) // Default if not set
+
         startForeground(1, createNotification())
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        sensitivityThreshold = sharedPreferences.getFloat("sensitivity_threshold", 2.0f) // Default if not set
+
         event?.let {
             when (it.sensor.type) {
                 Sensor.TYPE_ACCELEROMETER -> {
