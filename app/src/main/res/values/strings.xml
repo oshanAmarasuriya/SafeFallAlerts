@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SafeFallAlerts</string>
+    <string name="title_activity_fall_confirmation">FallConfirmationActivity</string>
 </resources>
