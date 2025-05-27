@@ -27,6 +27,9 @@ class SensorService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var lastFallTimestamp: Long = 0L
 
+    private var gyroRotationRate = 0f
+    private var sensitivityThreshold = 2.0f // Default, adjustable from UI
+
     override fun onBind(intent: Intent): IBinder ? = null
 
     override fun onCreate() {
@@ -42,32 +45,70 @@ class SensorService : Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        sensitivityThreshold = sharedPreferences.getFloat("sensitivity_threshold", 2.0f) // Default if not set
         event?.let {
-            if (it.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                val x = it.values[0]
-                val y = it.values[1]
-                val z = it.values[2]
+            when (it.sensor.type) {
+                Sensor.TYPE_ACCELEROMETER -> {
+                    val x = it.values[0]
+                    val y = it.values[1]
+                    val z = it.values[2]
 
-                val magnitude = sqrt(x * x + y * y + z * z)
+                    val accMagnitude = sqrt(x * x + y * y + z * z)
 
-                if (magnitude < 2.0f) { // possible free fall
-                    val now = System.currentTimeMillis()
-                    if (now - lastFallTimestamp > 1000) {
-                        lastFallTimestamp = now
-                        Log.d("FallDetection", "Possible fall detected! Acc mag: $magnitude")
-                        // Trigger alert, vibration, etc.
-                        Handler(Looper.getMainLooper()).post {
-                            makeVibration()
+                    // Combine accelerometer + gyroscope for better accuracy
+                    if (accMagnitude < sensitivityThreshold && gyroRotationRate > 3.0f) {
+                        val now = System.currentTimeMillis()
+                        if (now - lastFallTimestamp > 1000) {
+                            lastFallTimestamp = now
+                            Log.d("FallDetection", "Possible fall detected! Acc mag: $accMagnitude, Gyro: $gyroRotationRate")
+
+                            Handler(Looper.getMainLooper()).post {
+                                makeVibration()
+                            }
+
+                            val intent = Intent(this, FallConfirmationActivity::class.java).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            }
+                            startActivity(intent)
                         }
-                        // Start new activity
-                        val intent = Intent(this, FallConfirmationActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        }
-                        startActivity(intent)
-
                     }
                 }
+
+                Sensor.TYPE_GYROSCOPE -> {
+                    val rx = it.values[0]
+                    val ry = it.values[1]
+                    val rz = it.values[2]
+                    gyroRotationRate = sqrt(rx * rx + ry * ry + rz * rz)
+                }
             }
+
+
+//            if (it.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+//                val x = it.values[0]
+//                val y = it.values[1]
+//                val z = it.values[2]
+//
+//                val magnitude = sqrt(x * x + y * y + z * z)
+//
+//                if (magnitude < 2.0f) { // possible free fall
+//                    val now = System.currentTimeMillis()
+//                    if (now - lastFallTimestamp > 1000) {
+//                        lastFallTimestamp = now
+//                        Log.d("FallDetection", "Possible fall detected! Acc mag: $magnitude")
+//                        // Trigger alert, vibration, etc.
+//                        Handler(Looper.getMainLooper()).post {
+//                            makeVibration()
+//                        }
+//                        // Start new activity
+//                        val intent = Intent(this, FallConfirmationActivity::class.java).apply {
+//                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                        }
+//                        startActivity(intent)
+//
+//                    }
+//                }
+//            }
         }
     }
 

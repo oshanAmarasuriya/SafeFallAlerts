@@ -17,7 +17,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.osh.safefallalerts.ui.theme.SafeFallAlertsTheme
 import android.Manifest
+import android.content.Context
 import android.widget.EditText
+import android.widget.SeekBar
 import android.widget.Toast
 import com.osh.safefallalerts.db.Contact
 import com.osh.safefallalerts.db.ContactDao
@@ -41,6 +43,8 @@ class MainActivity : ComponentActivity() {
 
         val startButton: Button = findViewById(R.id.btn_start)
         val stopButton: Button = findViewById(R.id.btn_stop)
+        val sensitivitySeekBar = findViewById<SeekBar>(R.id.sensitivitySeekBar)
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
         val nameEditText: EditText = findViewById(R.id.edit_name)
         val phoneEditText: EditText = findViewById(R.id.edit_phone)
@@ -101,5 +105,21 @@ class MainActivity : ComponentActivity() {
             }
         }
         loadContacts()
+
+        sensitivitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Map 0–100 to a threshold range, e.g., 0.5 to 3.0
+                val sensitivityThreshold = 0.5f + (progress / 100f) * 2.5f
+
+                // Save the threshold to SharedPreferences
+                with(sharedPreferences.edit()) {
+                    putFloat("sensitivity_threshold", sensitivityThreshold)
+                    apply()
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 }
