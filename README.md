@@ -26,10 +26,12 @@ Falls are a major health risk, particularly for the elderly. This app uses smart
 
 ## 📸 Screenshots
 
+## 📸 Screenshots
+
 <p align="center">
-  <img src="images/main_ui.png" alt="Main UI" width="30%"/>
-  <img src="images/fall_confirmation.png" alt="Fall Confirmation" width="30%"/>
-  <img src="images/background_monitoring.png" alt="Background Monitoring" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/b36067b9-9698-4de2-a3ce-6a61012ffa20" alt="Main UI" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/96ca56d7-1697-43b1-8554-248476beada6" alt="Fall Confirmation" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/689ce14e-1060-4fbc-a896-664b58477eb1" alt="Background Monitoring" width="30%"/>
 </p>
 
 <p align="center">
