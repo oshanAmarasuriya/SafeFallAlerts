@@ -24,6 +24,21 @@ Falls are a major health risk, particularly for the elderly. This app uses smart
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="images/main_ui.png" alt="Main UI" width="30%"/>
+  <img src="images/fall_confirmation.png" alt="Fall Confirmation" width="30%"/>
+  <img src="images/background_monitoring.png" alt="Background Monitoring" width="30%"/>
+</p>
+
+<p align="center">
+  <em>Main User Interface</em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <em>Fall Detection Confirmation</em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <em>Active Background Monitoring</em>
+</p>
+
+
 ## 📱 System Requirements
 
 - **OS:** Android 11 (API 30) or higher  
