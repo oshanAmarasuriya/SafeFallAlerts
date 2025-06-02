@@ -87,18 +87,15 @@ class MainActivity : ComponentActivity() {
         )
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_contacts)
-        adapter = ContactAdapter(listOf())
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
 
-        fun loadContacts() {
+        adapter = ContactAdapter(listOf()) { contactToDelete ->
             CoroutineScope(Dispatchers.IO).launch {
-                val contacts = dao.getAll()
-                withContext(Dispatchers.Main) {
-                    adapter.updateData(contacts)
-                }
+                dao.delete(contactToDelete)
+                loadContacts()
             }
         }
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
         addButton.setOnClickListener {
             val name = nameEditText.text.toString()
@@ -120,6 +117,7 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
+
         loadContacts()
 
         sensitivitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -137,5 +135,14 @@ class MainActivity : ComponentActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+    }
+
+    private fun loadContacts() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val contacts = dao.getAll()
+            withContext(Dispatchers.Main) {
+                adapter.updateData(contacts)
+            }
+        }
     }
 }

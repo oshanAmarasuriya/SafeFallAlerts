@@ -28,60 +28,21 @@ class FallConfirmationActivity : ComponentActivity() {
         dao = db.contactDao()
 
         AlertDialog.Builder(this)
-            .setTitle("Fall Detected")
-            .setMessage("Did you fall?")
+            .setTitle("Possible Fall/Emergency Detected")
+            .setMessage("Are you in an emergency??")
             .setPositiveButton("Yes") { _, _ ->
                 handleConfirmedFall()
                 //finish()
             }
             .setNegativeButton("No") { _, _ ->
-                Toast.makeText(this, "False alarm", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "False alarm!", Toast.LENGTH_SHORT).show()
                 finish()
             }
             .setCancelable(false)
             .show()
 
-
-        /*
-        countdown = 10
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Fall Detected")
-        builder.setMessage("Did you fall? (Auto-confirming in $countdown seconds)")
-        builder.setCancelable(false)
-
-        builder.setPositiveButton("Yes") { _, _ ->
-            handleConfirmedFall()
-        }
-
-        builder.setNegativeButton("No") { _, _ ->
-            handleFalseAlarm()
-        }
-
-        alertDialog = builder.create()
-        alertDialog.show()
-
-        // Start countdown updates
-        startCountdown()
-
-         */
     }
 
-
-    private fun startCountdown() {
-        countdownRunnable = object : Runnable {
-            override fun run() {
-                countdown--
-                alertDialog.setMessage("Did you fall? (Auto-confirming in $countdown seconds)")
-                if (countdown > 0) {
-                    handler.postDelayed(this, 1000)
-                } else {
-                    alertDialog.dismiss()
-                    handleConfirmedFall()
-                }
-            }
-        }
-        handler.post(countdownRunnable)
-    }
 
     private fun handleConfirmedFall() {
         getLastKnownLocation(applicationContext) { lat, lon ->
@@ -95,17 +56,11 @@ class FallConfirmationActivity : ComponentActivity() {
         finish()
     }
 
-    private fun handleFalseAlarm() {
-        Toast.makeText(this, "False alarm", Toast.LENGTH_SHORT).show()
-        handler.removeCallbacks(countdownRunnable)
-        finish()
-    }
-
     private fun sendLocationToAllContacts(latitude: Double, longitude: Double) {
         CoroutineScope(Dispatchers.IO).launch {
-            val contacts = dao.getAll() // assuming dao is your ContactDao
+            val contacts = dao.getAll()
             withContext(Dispatchers.Main) {
-                val message = "Fall detected! Location: https://maps.google.com/?q=$latitude,$longitude"
+                val message = "An emergency detected! Location: https://maps.google.com/?q=$latitude,$longitude"
 
                 try {
                     val smsManager = SmsManager.getDefault()
@@ -123,7 +78,6 @@ class FallConfirmationActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(countdownRunnable)
-        //countdown=10
     }
 
 }
