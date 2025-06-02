@@ -127,7 +127,7 @@ class SensorService : Service(), SensorEventListener {
 
         return NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle("Fall Detection Active")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .build()
     }
 
