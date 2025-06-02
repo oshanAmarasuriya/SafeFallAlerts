@@ -87,9 +87,6 @@ class MainActivity : ComponentActivity() {
         )
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_contacts)
-//        adapter = ContactAdapter(listOf())
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-//        recyclerView.adapter = adapter
 
         adapter = ContactAdapter(listOf()) { contactToDelete ->
             CoroutineScope(Dispatchers.IO).launch {
@@ -99,15 +96,6 @@ class MainActivity : ComponentActivity() {
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-
-//        fun loadContacts() {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val contacts = dao.getAll()
-//                withContext(Dispatchers.Main) {
-//                    adapter.updateData(contacts)
-//                }
-//            }
-//        }
 
         addButton.setOnClickListener {
             val name = nameEditText.text.toString()
