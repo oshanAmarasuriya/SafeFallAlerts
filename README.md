@@ -2,6 +2,21 @@
 
 **SafeFall Alerts** is an intelligent Android application designed to detect accidental falls and send emergency SMS alerts with GPS location, especially useful for elderly individuals and high-risk users.
 
+---
+
+## 📑 Table of Contents
+
+- [📌 Overview](#-overview)
+- [🧠 Features](#-features)
+- [📸 Screenshots Of Application](#-screenshots-of-application)
+- [📱 System Requirements](#-system-requirements)
+- [⚙️ Tech Stack](#️-tech-stack)
+- [🛠️ Setup & Usage](#️-setup--usage)
+- [⚠️ Known Limitations](#️-known-limitations)
+- [🚀 Future Enhancements](#-future-enhancements)
+- [👨‍💻 Authors](#-authors)
+- [📄 License](#-license)
+
 ## 📌 Overview
 
 Falls are a major health risk, particularly for the elderly. This app uses smartphone motion sensors to detect falls in real time and automatically alert emergency contacts with the user’s location.
@@ -24,11 +39,11 @@ Falls are a major health risk, particularly for the elderly. This app uses smart
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots Of Application
 
 | <img src="https://github.com/user-attachments/assets/b36067b9-9698-4de2-a3ce-6a61012ffa20" width="250"/> | <img src="https://github.com/user-attachments/assets/96ca56d7-1697-43b1-8554-248476beada6" width="250"/> | <img src="https://github.com/user-attachments/assets/689ce14e-1060-4fbc-a896-664b58477eb1" width="250"/> |
 |:--:|:--:|:--:|
-| *Main UI* | *Fall Detection Confirmation* | *Background Monitoring* |
+| *Figure 1-Adding contact* | *Figure 2-Fall Detection Active* | *Figure 3-Fall Detectioned* | 
 
 
 ## 📱 System Requirements
